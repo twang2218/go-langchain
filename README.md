@@ -23,6 +23,66 @@ This library is aimed at assisting in the development of those types of applicat
 
 > TODO: Add link to full documentation
 
+## 🚀 Quick Start
+
+To call a LLM, such as OpenAI GPT API, you can use the following code:
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+
+    "github.com/lab99x/go-langchain/llms"
+)
+
+func main() {
+    llm := &llms.OpenAI{} // OpenAI API key can be set in environment variable OPENAI_API_KEY
+    resp, err := llm.Chat(context.Background(), "When the forbidden city was built?")
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(resp)
+    // Output: The forbidden city in Beijing was built in 1406.
+}
+```
+
+The Chains and Prompts are also implemented in this library. For example, you can use the following code to create a chain that calls OpenAI GPT API:
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+
+    "github.com/lab99x/go-langchain/llms"
+    "github.com/lab99x/go-langchain/prompts"
+    "github.com/lab99x/go-langchain/chains"
+)
+
+func main() {
+    llm := &llms.OpenAI{} // OpenAI API key can be set in environment variable OPENAI_API_KEY
+    prompt_template := prompts.NewPromptTemplateByTemplate("Where is the capital city of {country}?")
+    c := chains.NewLLMChain(llm, prompt_template)
+
+    resp, err := c.RunText(context.Background(), "China")
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(resp)
+    // Output: The capital city of China is Beijing.
+
+    resp, err = c.Run(context.Background(), map[string]string{"country": "France"})
+    if err != nil {
+        panic(err)
+    }
+    fmt.Println(resp)
+    // Output: The capital city of France is Paris.
+}
+```
+
 ## Relationship with Python LangChain
 
 This library is the Go language implementation of [LangChain](https://github.com/hwchase17/langchain). 
